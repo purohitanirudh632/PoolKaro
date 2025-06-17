@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import RegisterAPIview , RideAPIview ,BookingApiView
+from .views import RegisterAPIview , RideAPIview ,BookingApiView ,SearchRide
 from rest_framework_simplejwt.views import (TokenObtainPairView , TokenRefreshView)
 urlpatterns = [
     path('register/',RegisterAPIview.as_view(),name='register'),
@@ -8,5 +8,6 @@ urlpatterns = [
     path('create/',RideAPIview.as_view(),name = 'create ride'),
     path('get_rides',RideAPIview.as_view(),name = 'get_rides'),
     path('book/',BookingApiView.as_view(),name = 'book ride'),
-    path('cancle-booking/<pk>',BookingApiView.as_view(),name = 'deleteBooking')
+    path('cancle-booking/<pk>',BookingApiView.as_view(),name = 'deleteBooking'),
+    path('search_ride/',SearchRide.as_view(),name ='search Rides')
 ]

@@ -22,10 +22,15 @@ class UserSerializer(serializers.ModelSerializer):
     
 
 class RideSerializer(serializers.ModelSerializer):
+    seats_left = serializers.SerializerMethodField()
     class Meta:
         model = Ride
-        fields = ['id' , 'driver' ,'source','date','destination','seats_count']
+        fields = ['id' , 'driver' ,'source','date','destination','seats_count','seats_left']
         read_only_fields = ["driver"]
+    def get_seats_left(self,obj):
+        total_booked = sum(b.seats_book for b in obj.bookings.all())
+        # print(total_booked)
+        return obj.seats_count - total_booked    
     
 class BookingSerializer(serializers.ModelSerializer):
     class Meta:

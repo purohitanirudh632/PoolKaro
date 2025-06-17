@@ -5,6 +5,8 @@ from rest_framework.views  import APIView
 from rest_framework.response import Response
 from rest_framework.status import HTTP_400_BAD_REQUEST , HTTP_200_OK , HTTP_201_CREATED , HTTP_404_NOT_FOUND , HTTP_401_UNAUTHORIZED
 from rest_framework.permissions import IsAuthenticated , AllowAny
+from django.utils.dateparse import parse_date
+from django.utils.timezone import now
 # Create your views here.
 class RegisterAPIview(APIView):
     def post(self,request):
@@ -83,3 +85,40 @@ class BookingApiView(APIView):
         booking.delete()
         return Response({"message":"your Booking has been cancelled successfully"})
 
+
+
+class SearchRide(APIView):
+    def get(self,request):
+        source =  request.GET.get('source')
+        destination =  request.GET.get('destination')
+        date_str =  request.GET.get('date')
+        # print(date_str,'\n\n\n\n\n\n')
+
+        rides =  Ride.objects.filter(date__gte = now())
+        # print(rides)
+        if source:
+            rides= rides.filter(source__icontains = source)
+            # print(rides)
+            # print("aaya kuch\n\n\n\n\n")
+        if destination:
+            rides = rides.filter(destination__icontains = destination)
+            # print(rides)
+        # if date_str:
+        #     parsed_date = parse_date(date_str)
+        #     parsed_date
+        #     if parsed_date:
+        #         rides = rides.filter(date__date = parsed_date)
+        #         print(rides)
+        #     else:
+        #         return Response({"error":"enter the correct format of date"}, status=HTTP_400_BAD_REQUEST)           
+        # else:
+        #     return Response({"error":"Please enter the date value"},status=HTTP_400_BAD_REQUEST)
+        avilable_ride =[]
+        # print(rides)
+        for ride in rides:
+            seats_left = RideSerializer().get_seats_left(ride)
+            # print(seats_left)
+            if seats_left>0:
+                serializer = RideSerializer(ride)
+                avilable_ride.append(serializer.data)
+        return Response({"avilable_rides":avilable_ride})        

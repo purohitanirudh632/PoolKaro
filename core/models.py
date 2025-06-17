@@ -17,7 +17,7 @@ class Ride(models.Model):
     date = models.DateTimeField()
     destination = models.CharField(max_length=1000)
     seats_count = models.IntegerField()
-    # price = models.DecimalField()
+    # price = models.IntegerField()
     def __str__(self):
         return f"{self.source} to {self.destination} by  {self.driver} on {self.date.strftime('%Y-%m-%d %H:%M')}"
 
